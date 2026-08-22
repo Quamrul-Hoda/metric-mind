@@ -1,0 +1,11 @@
+services:
+  cube:
+    build:
+      context: ./cube
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./cube/.env
+    volumes:
+      - ./cube:/cube/conf
