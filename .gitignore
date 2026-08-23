@@ -25,6 +25,10 @@ yarn-error.log*
 dist/
 build/
 
+# Data files
+data/raw/
+data/processed/
+
 # Databricks
 .databrickscfg
 
