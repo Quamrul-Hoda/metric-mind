@@ -39,3 +39,18 @@
 - Databricks notebook successfully displayed the source data and Raw Delta data.
 - Raw Delta schema and row count were successfully verified.
 - Duplicate rows: 0.
+
+## Staging Transformations
+
+- Loaded the Day 2 Raw Delta dataset from Databricks Volume.
+- Created a staging transformation DataFrame.
+- Standardized raw column names to snake_case.
+- Converted order and shipping date fields to Spark date types.
+- Preserved NULL values in incomplete source fields rather than fabricating values.
+- Verified duplicate rows: 0.
+- Standardized the region field.
+- Added order year, month, and quarter fields.
+- Wrote the transformed dataset as Staging Delta.
+- Validated Raw vs Staging row counts.
+- Validated key staging fields.
+- Raw dataset remained unchanged.
