@@ -54,3 +54,44 @@
 - Validated Raw vs Staging row counts.
 - Validated key staging fields.
 - Raw dataset remained unchanged.
+
+## dbt Transformation Pipeline
+
+### Completed
+- Configured dbt Core with Databricks adapter.
+- Configured Databricks connection through `profiles.yml`.
+- Verified dbt connectivity with `dbt debug`.
+- Registered `stg_dataco` as the dbt source.
+- Created staging model `stg_dataco`.
+- Added staging data-quality tests.
+- Identified that `order_id` is not unique because the dataset contains multiple items per order.
+- Validated `order_item_id` as the unique row/item identifier.
+- Created intermediate model `int_sales`.
+- Created mart model `fct_sales`.
+- Verified the complete dbt dependency graph.
+- Successfully executed the complete dbt build.
+
+### Final dbt Build Result
+
+PASS=5 
+WARN=0 
+ERROR=0 
+SKIP=0 
+NO-OP=0 
+REUSED=0 
+TOTAL=5
+
+### dbt DAG
+
+source:metricmind.metricmind.stg_dataco
+        ↓
+stg_dataco
+        ↓
+int_sales
+        ↓
+fct_sales
+
+### Data Quality
+
+- `order_item_id` NOT NULL — PASS
+- `order_item_id` UNIQUE — PASS

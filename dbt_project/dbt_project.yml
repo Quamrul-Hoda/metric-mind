@@ -1,0 +1,17 @@
+name: 'metricmind'
+version: '1.0.0'
+config-version: 2
+
+profile: 'metricmind'
+
+model-paths: ["models"]
+test-paths: ["tests"]
+
+models:
+  metricmind:
+    staging:
+      +materialized: table
+    intermediate:
+      +materialized: table
+    marts:
+      +materialized: table

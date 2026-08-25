@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: stg_dataco
+    description: "Staging model for the DataCo Supply Chain dataset."
+
+    columns:
+      - name: order_id
+        description: "Identifier for the order."
+
+      - name: order_item_id
+        description: "Unique identifier for the individual order item."
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        description: "Identifier of the customer associated with the order."
+
+      - name: order_date_dateorders
+        description: "Order date and time."
+
+      - name: shipping_date_dateorders
+        description: "Shipping date and time."
+
+      - name: sales
+        description: "Sales amount associated with the order."
+
+      - name: order_profit_per_order
+        description: "Profit generated from the order."
+
+      - name: order_status
+        description: "Current status of the order."
+
+      - name: delivery_status
+        description: "Delivery status of the order."

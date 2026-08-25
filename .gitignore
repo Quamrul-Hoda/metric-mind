@@ -32,6 +32,10 @@ data/processed/
 # Databricks
 .databrickscfg
 
+# dbt generated files
+dbt_project/target/
+dbt_project/dbt_packages/
+
 # Cube store runtime data
 cube/.cubestore/
 

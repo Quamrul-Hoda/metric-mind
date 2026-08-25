@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: metricmind
+    catalog: workspace
+    schema: default
+    tables:
+      - name: stg_dataco
