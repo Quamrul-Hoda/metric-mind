@@ -3,6 +3,7 @@
 .env.*
 !.env.example
 cube/.env
+semantic_layer/.env
 
 # Python
 __pycache__/
