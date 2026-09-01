@@ -95,3 +95,25 @@ fct_sales
 
 - `order_item_id` NOT NULL — PASS
 - `order_item_id` UNIQUE — PASS
+
+## Cube Semantic Model Expansion
+
+- Audited the existing Cube `Sales` semantic model.
+- Added governed business measures:
+  - Total Revenue
+  - Total Profit
+  - Total Cost
+  - Profit Margin
+- Added business dimensions:
+  - Region
+  - Country
+  - State
+  - Category
+  - Department
+  - Order Status
+  - Delivery Status
+- Added `orderDate` as a Cube time dimension.
+- Validated Cube metadata after the model expansion.
+- Validated monthly time-based revenue queries.
+- Validated regional queries using revenue, profit, and profit margin.
+- Confirmed Cube starts successfully with the expanded semantic model.

@@ -20,6 +20,26 @@ cube(`Sales`, {
     averageSales: {
       type: `avg`,
       sql: `sales`
+    },
+
+    totalRevenue: {
+      sql: `sales`,
+      type: `sum`
+    },
+
+    totalProfit: {
+      sql: `order_profit_per_order`,
+      type: `sum`
+    },
+
+    totalCost: {
+      sql: `sales - order_profit_per_order`,
+      type: `sum`
+    },
+
+    profitMargin: {
+      sql: `100.0 * SUM(order_profit_per_order) / NULLIF(SUM(sales), 0)`,
+      type: `number`
     }
   },
 
@@ -28,11 +48,6 @@ cube(`Sales`, {
       sql: `order_item_id`,
       type: `string`,
       primaryKey: true
-    },
-
-    orderStatus: {
-      sql: `order_status`,
-      type: `string`
     },
 
     market: {
@@ -58,6 +73,40 @@ cube(`Sales`, {
     shippingDate: {
       sql: `shipping_date_dateorders`,
       type: `time`
+    },
+    region: {
+      sql: `region`,
+      type: `string`
+    },
+
+    country: {
+      sql: `order_country`,
+      type: `string`
+    },
+
+    state: {
+      sql: `order_state`,
+      type: `string`
+    },
+
+    category: {
+      sql: `category_name`,
+      type: `string`
+    },
+
+    department: {
+      sql: `department_name`,
+      type: `string`
+    },
+
+    orderStatus: {
+      sql: `order_status`,
+      type: `string`
+    },
+
+    deliveryStatus: {
+      sql: `delivery_status`,
+      type: `string`
     }
   }
 });
