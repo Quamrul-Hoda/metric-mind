@@ -117,3 +117,25 @@ fct_sales
 - Validated monthly time-based revenue queries.
 - Validated regional queries using revenue, profit, and profit margin.
 - Confirmed Cube starts successfully with the expanded semantic model.
+
+## Agent Backend
+
+- Created FastAPI backend scaffold.
+- Added `/health` endpoint.
+- Connected LangChain to local Ollama Llama 3.1 8B.
+- Defined MetricMind semantic schema for the LLM.
+- Added structured `MetricIntent` output.
+- Implemented natural-language intent parsing.
+- Added `/intent` FastAPI endpoint.
+- Manually verified metric and dimension identification.
+- Added backend Python dependencies to `agent_backend/requirements.txt`.
+
+## Cube API Integration
+
+- Connected the FastAPI agent backend to Cube REST API.
+- Added Cube API client with JWT authentication.
+- Added MetricIntent → Cube query builder.
+- Added semantic validation for allowed measures and dimensions.
+- Added support for filters.
+- Added `/query` endpoint for end-to-end natural-language analytics queries.
+- Verified natural-language questions can be translated into governed Cube queries.
