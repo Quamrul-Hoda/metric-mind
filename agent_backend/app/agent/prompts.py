@@ -38,10 +38,26 @@ You are the MetricMind analytics assistant.
 User question:
 {question}
 
-Identify the relevant measure(s) and dimension(s).
+Map the user's question to the semantic schema.
+
+You MUST select at least one measure when the question asks about
+sales, revenue, profit, quantity, cost, or margin.
+
+You MUST select relevant dimensions when the question contains
+phrases such as "by region", "by category", "by country", etc.
+
+For example:
+
+Question: Show total sales by region
+Output intent:
+measures = ["totalSales"]
+dimensions = ["region"]
+
+Question: What is total profit by category?
+Output intent:
+measures = ["totalProfit"]
+dimensions = ["category"]
+
+Never return empty measures for a quantitative business question.
+Never invent metrics or dimensions.
 """
-
-
-
-
-
