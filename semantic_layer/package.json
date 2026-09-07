@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@cubejs-backend/databricks-jdbc-driver": "^1.7.30",
+    "@cubejs-backend/databricks-jdbc-driver": "^1.7.35",
     "@cubejs-backend/jdbc": "^0.9.0",
     "@cubejs-backend/server": "^1.7.30",
     "jsonwebtoken": "^9.0.3"
