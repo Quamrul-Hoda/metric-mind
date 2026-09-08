@@ -7,6 +7,8 @@ ALLOWED_MEASURES = {
     "averageSales",
     "totalRevenue",
     "totalProfit",
+    "shippingCost",
+    "materialCost",
     "totalCost",
     "profitMargin",
 }
