@@ -8,8 +8,18 @@ def answer_question(question: str) -> dict:
     cube_query = build_cube_query(intent)
     result = query_cube(cube_query)
 
-    return {
+    response = {
         "intent": intent.model_dump(),
         "query": cube_query,
         "data": result,
     }
+
+    if any(
+        measure.lower() in {"profitmargin", "margin"}
+        for measure in intent.measures
+    ):
+        from agent_backend.app.agent.tools.root_cause_tool import root_cause_analysis
+
+        response["root_cause"] = root_cause_analysis()
+
+    return response
