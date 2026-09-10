@@ -40,6 +40,16 @@ cube(`Sales`, {
     profitMargin: {
       sql: `100.0 * SUM(order_profit_per_order) / NULLIF(SUM(sales), 0)`,
       type: `number`
+    },
+
+    shippingCost: {
+      type: `number`,
+      sql: `SUM(${CUBE}.sales) - SUM(${CUBE}.order_profit_per_order)`
+    },
+
+    materialCost: {
+      type: `number`,
+      sql: `SUM(${CUBE}.sales) - SUM(${CUBE}.order_profit_per_order)`
     }
   },
 
