@@ -139,3 +139,20 @@ fct_sales
 - Added support for filters.
 - Added `/query` endpoint for end-to-end natural-language analytics queries.
 - Verified natural-language questions can be translated into governed Cube queries.
+
+## Multi-Step Margin Root Cause Analysis
+
+### Completed
+- Implemented `root_cause_tool.py`.
+- Added cost/profit analysis through the Cube semantic layer.
+- Added root-cause explanation generation.
+- Integrated root-cause analysis with the `/query` flow.
+- Added `/root-cause` API endpoint.
+- Tested the complete margin analysis flow.
+
+### Flow
+Natural-language question → Intent → Cube query → Margin analysis → Root-cause analysis → Explanation
+
+### Result
+MetricMind can now perform secondary analysis for margin-related questions and return a business-focused root-cause explanation.
+
