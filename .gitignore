@@ -57,3 +57,10 @@ cube/.cubestore/
 # Generated local data
 data/generated/
 
+# Cube runtime files
+semantic_layer/.cubestore/
+semantic_layer/databricks_jdbc.log*
+semantic_layer/*.lck
+
+# Editor backup files
+*.save
