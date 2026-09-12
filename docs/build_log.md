@@ -156,3 +156,20 @@ Natural-language question → Intent → Cube query → Margin analysis → Root
 ### Result
 MetricMind can now perform secondary analysis for margin-related questions and return a business-focused root-cause explanation.
 
+## Frontend Integration
+
+### Completed
+- Created Next.js frontend for MetricMind.
+- Connected frontend chat input to the FastAPI `/query` endpoint.
+- Added CORS support between Next.js and FastAPI.
+- Added loading and error handling for backend requests.
+- Added readable intent, Cube query, and result-table displays.
+- Integrated root-cause analysis results into the frontend.
+- Added example business questions for demonstration.
+- Verified end-to-end flow from natural language question to Databricks results.
+
+### Flow
+Natural-language question → Next.js → FastAPI → Agent → Cube → Databricks → Results
+
+### Result
+MetricMind now provides a working web interface for governed natural-language business analytics and displays both analytical results and root-cause explanations.
