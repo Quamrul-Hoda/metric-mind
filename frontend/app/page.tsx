@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ChartRenderer from "../components/ChartRenderer";
 
 export default function Home() {
   const [question, setQuestion] = useState("");
@@ -125,6 +126,12 @@ export default function Home() {
 
             <div className="rounded-xl bg-white p-6 shadow">
               <h2 className="text-xl font-semibold text-gray-900">Results</h2>
+
+              <ChartRenderer
+                rows={rows}
+                dimensions={response.intent?.dimensions}
+                measures={response.intent?.measures}
+              />
 
               {rows.length > 0 ? (
                 <div className="mt-4 overflow-x-auto">
