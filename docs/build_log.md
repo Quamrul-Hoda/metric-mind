@@ -173,3 +173,21 @@ Natural-language question → Next.js → FastAPI → Agent → Cube → Databri
 
 ### Result
 MetricMind now provides a working web interface for governed natural-language business analytics and displays both analytical results and root-cause explanations.
+
+## Dynamic Visualization
+
+### Completed
+- Added ECharts and echarts-for-react to the Next.js frontend.
+- Created reusable `ChartRenderer.tsx`.
+- Added automatic bar-chart rendering for categorical results.
+- Added automatic line-chart rendering for time-series results.
+- Integrated charts with the existing structured Cube results.
+- Preserved the results table alongside visualizations.
+- Added graceful handling for empty, unsupported, and single-value results.
+- Tested sales, profit, and time-series visualization flows successfully.
+
+### Flow
+Natural-language question → Agent → Cube → Structured JSON → ChartRenderer → ECharts visualization
+
+### Result
+MetricMind can now dynamically visualize structured analytical results using bar charts for categorical data and line charts for time-series data.
