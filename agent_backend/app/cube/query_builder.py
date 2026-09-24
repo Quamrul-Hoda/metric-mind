@@ -51,6 +51,12 @@ def build_cube_query(intent: MetricIntent) -> dict:
     }
 
     if intent.filters:
-        query["filters"] = intent.filters
-
+        query["filters"] = [
+            {
+                "member": f"Sales.{filter_.member}",
+                "operator": filter_.operator,
+                "values": filter_.values,
+            }
+            for filter_ in intent.filters
+        ]
     return query
