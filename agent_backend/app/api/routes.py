@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from agent_backend.app.agent.intent_parser import parse_intent
@@ -31,7 +31,13 @@ def get_intent(request: QuestionRequest):
 
 @router.post("/query")
 def query(request: QuestionRequest):
-    return answer_question(request.question)
+    try:
+        return answer_question(request.question)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=str(exc),
+        )
 
 @router.get("/governance")
 def governance():
