@@ -1,104 +1,163 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactECharts from "echarts-for-react";
+import {
+  formatMeasureValue,
+  getDimensionColumn,
+  getMeasureColumns,
+  humanizeLabel,
+  isTimeDimension,
+  formatTimeAxisLabel,
+  shortenCategoryLabel,
+} from "../lib/format";
+import type { QueryRow } from "../lib/api";
 
 interface ChartRendererProps {
-  rows: Record<string, any>[];
+  rows: QueryRow[];
   dimensions?: string[];
   measures?: string[];
 }
+function useIsDark(): boolean {
+  const [isDark, setIsDark] = useState(false);
 
-export default function ChartRenderer({
-  rows,
-  dimensions = [],
-  measures = [],
-}: ChartRendererProps) {
+  useEffect(() => {
+    const root = document.documentElement;
+    const update = () => setIsDark(root.classList.contains("dark"));
+    update();
+    const observer = new MutationObserver(update);
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
+
+  return isDark;
+}
+
+const SERIES_COLORS = ["#24406f", "#1f8a70", "#a3660f"];
+
+type TooltipParam = {
+  axisValue?: string;
+  seriesName?: string;
+  value?: number | string;
+};
+
+function escapeTooltipValue(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  })[character] ?? character);
+}
+
+export default function ChartRenderer({ rows, dimensions = [], measures = [] }: ChartRendererProps) {
+  const isDark = useIsDark();
+  const inkMuted = isDark ? "#98a2b3" : "#5b6472";
+  const border = isDark ? "#2a323d" : "#dde2e8";
+  const ink = isDark ? "#e7ebf1" : "#12161c";
+
   if (!rows || rows.length === 0) {
-    return (
-      <div className="mt-4 rounded-lg border border-gray-200 p-6 text-center text-gray-500">
-        No data available for visualization.
-      </div>
-    );
+    return <div className="flex h-64 items-center justify-center rounded-lg border border-[var(--mm-border)] bg-[var(--mm-surface-alt)] text-sm text-[var(--mm-ink-muted)]">No data available for visualization.</div>;
   }
 
-  const keys = Object.keys(rows[0]);
+  const dimensionKey = getDimensionColumn(rows, dimensions);
+  const measureKeys = getMeasureColumns(rows, measures).slice(0, 3);
 
-  const dimensionKey =
-    dimensions.length > 0
-      ? dimensions.find((dimension) =>
-          keys.some((key) => key === dimension)
-        ) || keys[0]
-      : keys[0];
-
-  const measureKey =
-    measures.length > 0
-      ? measures.find((measure) =>
-          keys.some((key) => key === measure)
-        ) || keys[1]
-      : keys[1];
-
-  if (!dimensionKey || !measureKey) {
-    return (
-      <div className="mt-4 rounded-lg border border-gray-200 p-6 text-center text-gray-500">
-        Insufficient data for visualization.
-      </div>
-    );
+  if (!dimensionKey || measureKeys.length === 0) {
+    return <div className="flex h-64 items-center justify-center rounded-lg border border-[var(--mm-border)] bg-[var(--mm-surface-alt)] text-sm text-[var(--mm-ink-muted)]">Insufficient data for visualization.</div>;
   }
 
-  const isTimeSeries =
-    dimensionKey.toLowerCase().includes("date") ||
-    dimensionKey.toLowerCase().includes("time");
-
-  const categories = rows.map((row) => String(row[dimensionKey]));
-
-  const values = rows.map((row) => {
-    const value = Number(row[measureKey]);
-    return Number.isFinite(value) ? value : 0;
-  });
+  const timeSeries = isTimeDimension(dimensionKey);
+  const categories = rows.map((row) => String(row[dimensionKey] ?? "—"));
+  const horizontalBars = !timeSeries && categories.length >= 8;
+  const series = measureKeys.map((key, index) => ({
+    name: humanizeLabel(key),
+    type: timeSeries ? "line" : "bar",
+    smooth: timeSeries,
+    showSymbol: !timeSeries || categories.length <= 24,
+    data: rows.map((row) => {
+      const value = Number(row[key]);
+      return Number.isFinite(value) ? value : 0;
+    }),
+    itemStyle: { color: SERIES_COLORS[index % SERIES_COLORS.length] },
+    lineStyle: { color: SERIES_COLORS[index % SERIES_COLORS.length] },
+    barMaxWidth: 42,
+  }));
 
   const option = {
+    backgroundColor: "transparent",
+    textStyle: { color: ink, fontFamily: "var(--font-sans, sans-serif)" },
+    title: {
+      text: `${measureKeys.map(humanizeLabel).join(" & ")} ${timeSeries ? "over time" : `by ${humanizeLabel(dimensionKey)}`}`,
+      left: 0,
+      textStyle: { color: ink, fontSize: 14, fontWeight: 500 },
+    },
     tooltip: {
       trigger: "axis",
+      formatter: (params: TooltipParam[] | TooltipParam) => {
+        const items = Array.isArray(params) ? params : [params];
+        const rawCategory = String(items[0]?.axisValue ?? "");
+        const rows = items.map((item) => {
+          const measureKey = measureKeys.find((key) => humanizeLabel(key) === item.seriesName) ?? measureKeys[0];
+          return `${escapeTooltipValue(item.seriesName ?? humanizeLabel(measureKey))}: ${formatMeasureValue(measureKey, Number(item.value))}`;
+        });
+        return [`<strong>${escapeTooltipValue(rawCategory)}</strong>`, ...rows].join("<br />");
+      },
+      backgroundColor: isDark ? "#151b23" : "#ffffff",
+      borderColor: border,
+      textStyle: { color: ink },
     },
-
+    legend: measureKeys.length > 1 ? { top: 0, right: 0, textStyle: { color: inkMuted, fontSize: 12 } } : undefined,
     grid: {
-      left: "5%",
-      right: "5%",
-      bottom: "15%",
+      left: horizontalBars ? "18%" : "1%",
+      right: "2%",
+      top: measureKeys.length > 1 ? 56 : 40,
+      bottom: timeSeries ? 44 : 36,
       containLabel: true,
     },
-
-    xAxis: {
-      type: "category",
-      data: categories,
-      axisLabel: {
-        rotate: categories.length > 8 ? 35 : 0,
-      },
-    },
-
-    yAxis: {
-      type: "value",
-    },
-
-    series: [
-      {
-        name: measureKey,
-        type: isTimeSeries ? "line" : "bar",
-        data: values,
-        smooth: isTimeSeries,
-      },
-    ],
+    xAxis: horizontalBars
+      ? {
+          type: "value",
+          axisLine: { show: false },
+          splitLine: { lineStyle: { color: border } },
+          axisLabel: { color: inkMuted, formatter: (value: number) => formatMeasureValue(measureKeys[0], value) },
+        }
+      : {
+          type: "category",
+          data: categories,
+          axisLine: { lineStyle: { color: border } },
+          axisLabel: {
+            color: inkMuted,
+            interval: timeSeries && categories.length > 12 ? Math.ceil(categories.length / 12) - 1 : 0,
+            rotate: !timeSeries && categories.length > 6 ? 30 : 0,
+            hideOverlap: true,
+            formatter: (value: string) => timeSeries ? formatTimeAxisLabel(value) : shortenCategoryLabel(value),
+          },
+        },
+    yAxis: horizontalBars
+      ? {
+          type: "category",
+          data: categories,
+          axisLine: { lineStyle: { color: border } },
+          axisLabel: { color: inkMuted, formatter: (value: string) => shortenCategoryLabel(value) },
+        }
+      : {
+          type: "value",
+          axisLine: { show: false },
+          splitLine: { lineStyle: { color: border } },
+          axisLabel: { color: inkMuted, formatter: (value: number) => formatMeasureValue(measureKeys[0], value) },
+        },
+    series,
   };
 
+  const chartHeight = horizontalBars
+    ? Math.min(620, Math.max(380, 220 + categories.length * 28))
+    : 380;
+
   return (
-    <div className="mt-4 rounded-xl border border-gray-200 bg-white p-4">
-      <ReactECharts
-        option={option}
-        style={{ height: "400px", width: "100%" }}
-        notMerge={true}
-        lazyUpdate={true}
-      />
+    <div className="rounded-lg border border-[var(--mm-border)] bg-[var(--mm-surface)] p-4">
+      <ReactECharts option={option} style={{ height: `${chartHeight}px`, width: "100%" }} notMerge={true} lazyUpdate={true} />
     </div>
   );
 }
