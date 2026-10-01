@@ -191,3 +191,13 @@ Natural-language question → Agent → Cube → Structured JSON → ChartRender
 
 ### Result
 MetricMind can now dynamically visualize structured analytical results using bar charts for categorical data and line charts for time-series data.
+
+## Governance & Transparency
+
+### Completed
+- Added centralized semantic query governance controls for timeout, retries, and maximum result rows.
+- Added backend audit logging for semantic query execution, including status, duration, row count, and executed semantic query.
+- Added `/governance` API endpoint exposing the active governance policy.
+- Integrated governance policy into the existing transparency modal.
+- Verified result-limit enforcement and successful audit logging through the full FastAPI → Cube → Databricks flow.
+- Preserved honest SQL transparency: SQL is not exposed by the current MetricMind API; the Cube semantic query remains the available transparency surface.
